@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "title": "Massachusetts Migration Analysis",
+    "source": "U.S. Census Bureau Vintage 2025",
+    "release_date": "2026-01-27",
+    "compiled": "2026-01-31"
+  },
+  "annual_migration": [
+    {
+      "period": "2020-21",
+      "fiscal_year_start": "2020-07-01",
+      "fiscal_year_end": "2021-06-30",
+      "domestic_migration": -1762,
+      "international_migration": 1762,
+      "net_migration": 0
+    },
+    {
+      "period": "2021-22",
+      "fiscal_year_start": "2021-07-01",
+      "fiscal_year_end": "2022-06-30",
+      "domestic_migration": -48000,
+      "international_migration": 72892,
+      "net_migration": 24892
+    },
+    {
+      "period": "2022-23",
+      "fiscal_year_start": "2022-07-01",
+      "fiscal_year_end": "2023-06-30",
+      "domestic_migration": -35400,
+      "international_migration": 74610,
+      "net_migration": 39210
+    },
+    {
+      "period": "2023-24",
+      "fiscal_year_start": "2023-07-01",
+      "fiscal_year_end": "2024-06-30",
+      "domestic_migration": -19200,
+      "international_migration": 90217,
+      "net_migration": 71017,
+      "notes": "Domestic migration revised DOWN 32% from original -27,500 estimate"
+    },
+    {
+      "period": "2024-25",
+      "fiscal_year_start": "2024-07-01",
+      "fiscal_year_end": "2025-06-30",
+      "domestic_migration": -33340,
+      "international_migration": 56600,
+      "net_migration": 23260,
+      "notes": "Immigration dropped 37%, exodus increased 74% from revised prior year"
+    }
+  ],
+  "cumulative_totals": {
+    "period": "2020-2025",
+    "domestic_migration": -137702,
+    "international_migration": 296081,
+    "net_migration": 158379,
+    "natural_change_estimate": 25718,
+    "total_population_change_estimate": 184097
+  },
+  "population_estimates": {
+    "april_2020_census": 6981974,
+    "july_2025_estimate": 7150000,
+    "seat_loss_threshold": 6790000
+  },
+  "projections_2030": [
+    {
+      "scenario": "old_status_quo",
+      "description": "Assumed +90K immigration continues (OBSOLETE)",
+      "population_2030": 7500000,
+      "loses_seat": false
+    },
+    {
+      "scenario": "current_trend",
+      "description": "If current rates stabilize",
+      "population_2030": 7150000,
+      "loses_seat": false
+    },
+    {
+      "scenario": "likely",
+      "description": "Immigration keeps dropping per Census projection",
+      "population_2030": 7030000,
+      "loses_seat": false,
+      "notes": "Close to threshold"
+    },
+    {
+      "scenario": "pessimistic",
+      "description": "Census projection plays out fully",
+      "population_2030": 6870000,
+      "loses_seat": true
+    },
+    {
+      "scenario": "worst_case",
+      "description": "Deportations + H1B cuts + accelerated exodus",
+      "population_2030": 6700000,
+      "loses_seat": true
+    }
+  ],
+  "outmigration_drivers": {
+    "source": "BU Finance Study (2024)",
+    "factors": [
+      { "reason": "Taxes", "relative_importance": 100, "rank": 1 },
+      { "reason": "Housing Costs", "relative_importance": 95, "rank": 2 },
+      { "reason": "Healthcare Expenses", "relative_importance": 85, "rank": 3 },
+      { "reason": "Traffic", "relative_importance": 70, "rank": 4 }
+    ],
+    "tax_foundation_ranking": {
+      "state": "Massachusetts",
+      "rank": 43,
+      "out_of": 50,
+      "metric": "State Business Tax Climate Index"
+    },
+    "klepper_smith_four_ts": [
+      "Taxes",
+      "Temperature", 
+      "Traffic",
+      "Targeting (of blue states for federal spending cuts)"
+    ]
+  },
+  "fiscal_data": {
+    "emergency_shelter_spending": {
+      "fy2024": 894000000,
+      "fy2025": 940000000,
+      "total": 1834000000,
+      "source": "Massachusetts state budget"
+    }
+  },
+  "key_changes_2024_25": {
+    "immigration_change_percent": -37,
+    "immigration_from": 90217,
+    "immigration_to": 56600,
+    "exodus_change_percent": 74,
+    "exodus_from": 19200,
+    "exodus_to": 33340,
+    "census_projection_further_drop_percent": 75,
+    "census_projection_date": "July 2026"
+  },
+  "sources": [
+    {
+      "name": "Census Bureau Vintage 2025 Press Release",
+      "url": "https://www.census.gov/newsroom/press-releases/2026/population-growth-slows.html",
+      "date": "2026-01-27"
+    },
+    {
+      "name": "Census Bureau Methodology Blog",
+      "url": "https://www.census.gov/newsroom/blogs/random-samplings/2026/01/historic-decline-in-net-international-migration.html",
+      "date": "2026-01-27"
+    },
+    {
+      "name": "Boston Globe - MA Outmigration",
+      "url": "https://www.bostonglobe.com/2026/01/27/business/people-leaving-massachusetts-outmigration-2025/",
+      "date": "2026-01-27"
+    },
+    {
+      "name": "IRS Statistics of Income Migration Data",
+      "url": "https://www.irs.gov/statistics/soi-tax-stats-migration-data"
+    },
+    {
+      "name": "Tax Foundation State Business Tax Climate Index",
+      "url": "https://taxfoundation.org/research/all/state/2024-state-business-tax-climate-index/"
+    },
+    {
+      "name": "Center for Immigration Studies - MA Welfare Analysis",
+      "url": "https://cis.org/Report/Massachusetts-Case-Study-Mass-Immigration-and-Welfare-State"
+    }
+  ]
+}
