@@ -2,9 +2,7 @@
 
 Interactive visualization of Massachusetts migration patterns using the latest Census Bureau Vintage 2025 data (released January 27, 2026).
 
-## 🔗 Live Demo
 
-**[View the Interactive Dashboard](https://yourusername.github.io/ma-migration-analysis/)**
 
 ## 📊 Key Findings
 
