@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Massachusetts Migration Analysis - Census 2025 Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .tab-btn.active { background: white; color: #2563eb; border-top: 2px solid #2563eb; border-left: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Massachusetts Migration Analysis</h1>
+            <p class="text-gray-600 text-sm">Census Bureau Vintage 2025 Data (Released Jan 27, 2026)</p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+            <div class="p-3 rounded-lg border-2 bg-red-50 border-red-200 text-red-700">
+                <div class="text-xs font-medium opacity-80">Residents Left (2020-25)</div>
+                <div class="text-xl font-bold">-137,702</div>
+                <div class="text-xs opacity-70">Domestic outmigration</div>
+            </div>
+            <div class="p-3 rounded-lg border-2 bg-blue-50 border-blue-200 text-blue-700">
+                <div class="text-xs font-medium opacity-80">Immigrants Arrived</div>
+                <div class="text-xl font-bold">+296,081</div>
+                <div class="text-xs opacity-70">International migration</div>
+            </div>
+            <div class="p-3 rounded-lg border-2 bg-green-50 border-green-200 text-green-700">
+                <div class="text-xs font-medium opacity-80">Net Migration</div>
+                <div class="text-xl font-bold">+158,379</div>
+                <div class="text-xs opacity-70">Immigration saved MA</div>
+            </div>
+            <div class="p-3 rounded-lg border-2 bg-purple-50 border-purple-200 text-purple-700">
+                <div class="text-xs font-medium opacity-80">Shelter Spending</div>
+                <div class="text-xl font-bold">$1.83B</div>
+                <div class="text-xs opacity-70">FY2024-FY2025</div>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="bg-orange-100 border-l-4 border-orange-500 p-3 mb-4 rounded text-sm">
+            <span class="font-bold text-orange-800">⚠️ 2024-25 Changes: </span>
+            <span class="text-orange-700">
+                Immigration ↓37% (90K→57K) | Exodus ↑74% (19K→33K) | Census projects 75% more drop by 2026
+            </span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-1 mb-0">
+            <button class="tab-btn active px-3 py-2 text-sm font-semibold rounded-t-lg bg-gray-100 text-gray-600" onclick="showTab('overview', this)">📊 Overview</button>
+            <button class="tab-btn px-3 py-2 text-sm font-semibold rounded-t-lg bg-gray-100 text-gray-600" onclick="showTab('annual', this)">📅 Annual</button>
+            <button class="tab-btn px-3 py-2 text-sm font-semibold rounded-t-lg bg-gray-100 text-gray-600" onclick="showTab('cumulative', this)">📈 Cumulative</button>
+            <button class="tab-btn px-3 py-2 text-sm font-semibold rounded-t-lg bg-gray-100 text-gray-600" onclick="showTab('projection', this)">🔮 2030</button>
+            <button class="tab-btn px-3 py-2 text-sm font-semibold rounded-t-lg bg-gray-100 text-gray-600" onclick="showTab('reasons', this)">❓ Why Leave</button>
+        </div>
+
+        <!-- Tab Content Container -->
+        <div class="bg-white border rounded-b-lg rounded-tr-lg p-4 shadow">
+            
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2 class="text-lg font-bold mb-3">The Massachusetts Paradox</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">Annual Migration Pattern</h3>
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-700 mb-2 text-sm">The Bottom Line</h3>
+                        <div class="bg-gray-50 p-3 rounded-lg text-sm">
+                            <p class="mb-2">
+                                <span class="font-bold text-red-600">137,702</span> residents 
+                                left for other states since 2020.
+                            </p>
+                            <p class="mb-2">
+                                <span class="font-bold text-blue-600">296,081</span> immigrants arrived, 
+                                covering the exodus <strong>twice over</strong>.
+                            </p>
+                            <p class="mb-2 p-2 bg-yellow-100 rounded text-xs">
+                                <strong>Without immigration, MA would have LOST ~112,000 people.</strong>
+                            </p>
+                            <p class="text-gray-600 text-xs">
+                                Immigration is the <em>only</em> reason MA population grew.
+                                Now both trends are reversing.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                    <h3 class="font-bold text-red-800 mb-1 text-sm">🚨 Congressional Seat at Risk</h3>
+                    <p class="text-red-700 text-xs">
+                        If population drops below ~6.79M by 2030, Massachusetts loses its 9th Congressional seat.
+                        Under pessimistic scenarios, this is now a real possibility.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Annual Tab -->
+            <div id="annual" class="tab-content">
+                <h2 class="text-lg font-bold mb-3">Annual Migration Data</h2>
+                <div class="overflow-x-auto mb-4">
+                    <table class="w-full border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border p-2 text-left">Period</th>
+                                <th class="border p-2 text-right">Domestic</th>
+                                <th class="border p-2 text-right">International</th>
+                                <th class="border p-2 text-right">Net</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white">
+                                <td class="border p-2 font-medium">2020-21</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-1,762</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+1,762</td>
+                                <td class="border p-2 text-right font-mono font-bold">0</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border p-2 font-medium">2021-22</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-48,000</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+72,892</td>
+                                <td class="border p-2 text-right font-mono font-bold">+24,892</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="border p-2 font-medium">2022-23</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-35,400</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+74,610</td>
+                                <td class="border p-2 text-right font-mono font-bold">+39,210</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border p-2 font-medium">2023-24</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-19,200</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+90,217</td>
+                                <td class="border p-2 text-right font-mono font-bold">+71,017</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="border p-2 font-medium">2024-25</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-33,340</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+56,600</td>
+                                <td class="border p-2 text-right font-mono font-bold">+23,260</td>
+                            </tr>
+                            <tr class="bg-gray-200 font-bold">
+                                <td class="border p-2">TOTAL</td>
+                                <td class="border p-2 text-right text-red-600 font-mono">-137,702</td>
+                                <td class="border p-2 text-right text-blue-600 font-mono">+296,081</td>
+                                <td class="border p-2 text-right font-mono">+158,379</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <canvas id="annualChart"></canvas>
+            </div>
+
+            <!-- Cumulative Tab -->
+            <div id="cumulative" class="tab-content">
+                <h2 class="text-lg font-bold mb-3">Cumulative Migration Since 2020</h2>
+                <canvas id="cumulativeChart"></canvas>
+                <div class="grid grid-cols-3 gap-2 mt-4">
+                    <div class="p-3 bg-blue-50 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-blue-600">+296K</div>
+                        <div class="text-xs text-blue-800">Total Immigrants</div>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-red-600">-138K</div>
+                        <div class="text-xs text-red-800">Residents Left</div>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg text-center">
+                        <div class="text-2xl font-bold text-green-600">+158K</div>
+                        <div class="text-xs text-green-800">Net Gain</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projection Tab -->
+            <div id="projection" class="tab-content">
+                <h2 class="text-lg font-bold mb-3">Population Projections to 2030</h2>
+                <canvas id="projectionChart"></canvas>
+                <div class="text-center text-red-600 font-bold text-sm mt-2">
+                    — — — Seat Loss Threshold: 6.79M — — —
+                </div>
+                <div class="overflow-x-auto mt-4">
+                    <table class="w-full border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border p-2 text-left">Scenario</th>
+                                <th class="border p-2 text-right">2030 Pop</th>
+                                <th class="border p-2 text-center">Loses Seat?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-blue-50">
+                                <td class="border p-2 text-blue-600">Current Trend</td>
+                                <td class="border p-2 text-right font-mono">7.15M</td>
+                                <td class="border p-2 text-center text-green-600 font-bold">No</td>
+                            </tr>
+                            <tr class="bg-orange-50">
+                                <td class="border p-2 text-orange-600 font-bold">LIKELY</td>
+                                <td class="border p-2 text-right font-mono">7.03M</td>
+                                <td class="border p-2 text-center text-orange-600 font-bold">Close</td>
+                            </tr>
+                            <tr class="bg-red-50">
+                                <td class="border p-2 text-red-600">Pessimistic</td>
+                                <td class="border p-2 text-right font-mono">6.87M</td>
+                                <td class="border p-2 text-center text-red-600 font-bold">YES</td>
+                            </tr>
+                            <tr class="bg-purple-50">
+                                <td class="border p-2 text-purple-600">Worst Case</td>
+                                <td class="border p-2 text-right font-mono">6.70M</td>
+                                <td class="border p-2 text-center text-red-600 font-bold">YES</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reasons Tab -->
+            <div id="reasons" class="tab-content">
+                <h2 class="text-lg font-bold mb-3">Why Massachusetts Residents Leave</h2>
+                <p class="text-gray-600 text-xs mb-3">Source: BU Finance Study (2024) + Economist Klepper-Smith</p>
+                <canvas id="reasonsChart"></canvas>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <div class="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <h3 class="font-bold text-yellow-800 text-sm">Tax Foundation</h3>
+                        <p class="text-3xl font-bold text-yellow-600">43rd</p>
+                        <p class="text-yellow-700 text-xs">out of 50 in tax competitiveness</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 class="font-bold text-blue-800 text-sm">The "Four T's"</h3>
+                        <ul class="text-blue-700 text-xs">
+                            <li>1. <strong>Taxes</strong></li>
+                            <li>2. <strong>Temperature</strong></li>
+                            <li>3. <strong>Traffic</strong></li>
+                            <li>4. <strong>Targeting</strong> (federal cuts)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-gray-100 rounded-lg">
+                    <h3 class="font-bold mb-2 text-sm">The Vicious Cycle</h3>
+                    <div class="flex flex-wrap items-center justify-center gap-1 text-xs">
+                        <span class="bg-red-100 px-2 py-1 rounded">High taxes</span>
+                        <span>→</span>
+                        <span class="bg-red-100 px-2 py-1 rounded">Residents leave</span>
+                        <span>→</span>
+                        <span class="bg-blue-100 px-2 py-1 rounded">Immigration replaces</span>
+                        <span>→</span>
+                        <span class="bg-purple-100 px-2 py-1 rounded">$1.83B shelters</span>
+                        <span>→</span>
+                        <span class="bg-red-100 px-2 py-1 rounded">More taxes</span>
+                        <span>→</span>
+                        <span>🔄</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-3 text-center text-xs text-gray-500">
+            Sources: U.S. Census Bureau Vintage 2025 (Jan 27, 2026), IRS SOI Migration Data, BU Finance Study (2024)
+            <br>
+            <a href="https://github.com/duncanburns2013-dot/Immigration" class="text-blue-500 hover:underline">View on GitHub</a>
+        </div>
+    </div>
+
+    <script>
+        // Store chart instances
+        var chartInstances = {};
+
+        function showTab(tabId, btn) {
+            // Hide all tabs and remove active class from buttons
+            document.querySelectorAll('.tab-content').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            
+            // Initialize chart for this tab
+            setTimeout(function() { initChart(tabId); }, 100);
+        }
+
+        function initChart(tabId) {
+            if (tabId === 'overview' && !chartInstances.overview) {
+                chartInstances.overview = new Chart(document.getElementById('overviewChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['2020-21', '2021-22', '2022-23', '2023-24', '2024-25'],
+                        datasets: [
+                            {
+                                label: 'Residents Left',
+                                data: [-1762, -48000, -35400, -19200, -33340],
+                                backgroundColor: '#ef4444'
+                            },
+                            {
+                                label: 'Immigrants Arrived',
+                                data: [1762, 72892, 74610, 90217, 56600],
+                                backgroundColor: '#3b82f6'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(v) { return (v/1000) + 'K'; }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (tabId === 'annual' && !chartInstances.annual) {
+                chartInstances.annual = new Chart(document.getElementById('annualChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['2020-21', '2021-22', '2022-23', '2023-24', '2024-25'],
+                        datasets: [
+                            {
+                                label: 'Residents Left',
+                                data: [-1762, -48000, -35400, -19200, -33340],
+                                backgroundColor: '#ef4444'
+                            },
+                            {
+                                label: 'Immigrants Arrived',
+                                data: [1762, 72892, 74610, 90217, 56600],
+                                backgroundColor: '#3b82f6'
+                            },
+                            {
+                                label: 'Net Total',
+                                data: [0, 24892, 39210, 71017, 23260],
+                                type: 'line',
+                                borderColor: '#000000',
+                                backgroundColor: '#000000',
+                                borderWidth: 2,
+                                pointRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(v) { return (v/1000) + 'K'; }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (tabId === 'cumulative' && !chartInstances.cumulative) {
+                chartInstances.cumulative = new Chart(document.getElementById('cumulativeChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                        datasets: [
+                            {
+                                label: 'Immigrants Arrived',
+                                data: [0, 1762, 74654, 149264, 239481, 296081],
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Net Migration',
+                                data: [0, 0, 24892, 64102, 135119, 158379],
+                                borderColor: '#22c55e',
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Residents Left',
+                                data: [0, -1762, -49762, -85162, -104362, -137702],
+                                borderColor: '#ef4444',
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(v) { return (v/1000) + 'K'; }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (tabId === 'projection' && !chartInstances.projection) {
+                chartInstances.projection = new Chart(document.getElementById('projectionChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['2025', '2026', '2027', '2028', '2029', '2030'],
+                        datasets: [
+                            {
+                                label: 'Current Trend',
+                                data: [7.15, 7.17, 7.18, 7.175, 7.165, 7.15],
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'transparent',
+                                borderWidth: 2,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'LIKELY',
+                                data: [7.15, 7.16, 7.15, 7.12, 7.08, 7.03],
+                                borderColor: '#f59e0b',
+                                backgroundColor: 'transparent',
+                                borderWidth: 3,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Pessimistic',
+                                data: [7.15, 7.14, 7.10, 7.04, 6.96, 6.87],
+                                borderColor: '#ef4444',
+                                backgroundColor: 'transparent',
+                                borderWidth: 2,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Worst Case',
+                                data: [7.15, 7.12, 7.05, 6.95, 6.83, 6.70],
+                                borderColor: '#8b5cf6',
+                                backgroundColor: 'transparent',
+                                borderWidth: 2,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Seat Loss (6.79M)',
+                                data: [6.79, 6.79, 6.79, 6.79, 6.79, 6.79],
+                                borderColor: '#dc2626',
+                                backgroundColor: 'transparent',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                min: 6.6,
+                                max: 7.3,
+                                ticks: {
+                                    callback: function(v) { return v + 'M'; }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (tabId === 'reasons' && !chartInstances.reasons) {
+                chartInstances.reasons = new Chart(document.getElementById('reasonsChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Taxes', 'Housing Costs', 'Healthcare', 'Traffic'],
+                        datasets: [{
+                            label: 'Relative Importance',
+                            data: [100, 95, 85, 70],
+                            backgroundColor: ['#991b1b', '#b91c1c', '#dc2626', '#ef4444']
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        scales: {
+                            x: {
+                                max: 110
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize overview chart on page load
+        window.onload = function() {
+            initChart('overview');
+        };
+    </script>
+</body>
+</html>
